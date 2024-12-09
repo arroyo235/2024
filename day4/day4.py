@@ -5,8 +5,6 @@ def main(file):
 
     xmas = r"XMAS"
     samx = r"SAMX"
-    mas = r"MAS"
-    sam = r"SAM"
     
     # Count horizontal forward
     matches_horizontal_forward = re.findall(xmas, file, flags=re.DOTALL)
@@ -45,17 +43,16 @@ def main(file):
     total_matches = len(matches_horizontal_forward) + len(matches_horizontal_backwards) + len(matches_vertical_forward) + len(matches_vertical_backwards) + len(matches_diagonal_forward) + len(matches_diagonal_backward)
     print(total_matches)
     
-    # PART 2 
-    
-    # Search for X-MAS
-    # Search for the "A" and then get its diagonal neighborrs
-    
+    # PART 2: Search for X-MAS
+    # Search for the "A" and then get its diagonal neighbors
     a_locations = np.argwhere(np_matrix == "A")
     
+    # Get valid diagonal_neighbors
     diagonal_neighbors = []
     for a in a_locations:
         diagonal_neighbors.append(get_diagonal_neighbors(np_matrix, a[0], a[1]))
 
+    # Remove None values on the list
     diagonal_neighbors = [item for item in diagonal_neighbors if item != None]
 
     total_x_mas = get_valid_x_mas(np_matrix, diagonal_neighbors)
