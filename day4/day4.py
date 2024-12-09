@@ -5,6 +5,8 @@ def main(file):
 
     xmas = r"XMAS"
     samx = r"SAMX"
+    mas = r"MAS"
+    sam = r"SAM"
     
     # Count horizontal forward
     matches_horizontal_forward = re.findall(xmas, file, flags=re.DOTALL)
@@ -43,9 +45,52 @@ def main(file):
     total_matches = len(matches_horizontal_forward) + len(matches_horizontal_backwards) + len(matches_vertical_forward) + len(matches_vertical_backwards) + len(matches_diagonal_forward) + len(matches_diagonal_backward)
     print(total_matches)
     
+    # PART 2 
+    
+    # Search for X-MAS
+    # Search for the "A" and then get its diagonal neighborrs
+    
+    a_locations = np.argwhere(np_matrix == "A")
+    
+    diagonal_neighbors = []
+    for a in a_locations:
+        diagonal_neighbors.append(get_diagonal_neighbors(np_matrix, a[0], a[1]))
+
+    diagonal_neighbors = [item for item in diagonal_neighbors if item != None]
+
+    total_x_mas = get_valid_x_mas(np_matrix, diagonal_neighbors)
+    print(total_x_mas)
+
+def get_diagonal_neighbors(matrix, x, y):
+    
+    rows, cols = matrix.shape  # Dimensiones de la matriz
+    
+    diagonals = [
+        (x - 1, y - 1),  # Superior izquierda
+        (x - 1, y + 1),  # Superior derecha
+        (x + 1, y - 1),  # Inferior izquierda
+        (x + 1, y + 1)   # Inferior derecha
+    ]
+    
+    valid_diagonals = [
+        (i, j) for i, j in diagonals if 0 <= i < rows and 0 <= j < cols
+    ]
+
+    if (len(valid_diagonals) == 4):
+        return valid_diagonals
+    else:
+        return
+    
+def get_valid_x_mas(matrix, diagonal_neighbors):
+    total = 0
+    for i, j, k, l in diagonal_neighbors:
+        if (((matrix[i] == "M" and matrix[l] == "S") or (matrix[i] == "S" and matrix[l] == "M")) and ((matrix[j] == "M" and matrix[k] == "S") or (matrix[j] == "S" and matrix[k] == "M"))):
+            total += 1
+            
+    return total
     
 if __name__ == "__main__":
     file = open("test.txt", "r")
-    file = open("input.txt", "r") # 2409 too low
+    file = open("input.txt", "r")
     # lines = file.read().split("\n")
     main(file.read())
