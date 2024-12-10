@@ -15,13 +15,17 @@ def main(lines):
             continue
            
     correct_updates = []
+    fixed_updates = []
     for update in updates:
-        # print(update)
         if eval_update(update):
             correct_updates.append(int(update[len(update) // 2]))
-        # print()
-        
+        else:
+            fixed_update = fix_update(update)
+            fixed_updates.append(int(fixed_update[len(fixed_update) // 2]))
+            
     print(sum(correct_updates))
+    print(sum(fixed_updates))
+    
 def eval_update(update:list):
 
     rules_found = 0
@@ -29,11 +33,21 @@ def eval_update(update:list):
         x = update[i]
         y = update[i+1]
         if ([x,y] in page_ordering_rules):
-            # print("Rule", [x,y],"found")
             rules_found += 1
             
     return True if (rules_found == len(update)-1) else False
 
+def fix_update(update:list):
+    # Fix the update
+    for i in range(len(update)-1):
+        x = update[i]
+        y = update[i+1]
+        if ([x,y] not in page_ordering_rules):
+            update[i], update[i+1] = update[i+1], update[i]
+            while not eval_update(update):
+                fix_update(update)
+            
+    return update
     
 if __name__ == "__main__":
     file = open("test.txt", "r")
